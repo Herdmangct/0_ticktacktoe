@@ -32,7 +32,7 @@ $(document).ready(function () {
       $(this).text(board.player);
 
       // wining move
-      if (board.isWin()) {
+      if (board.isWin() || board.isFull()) {
 
         // don't run this function again
         // gameOver = true;

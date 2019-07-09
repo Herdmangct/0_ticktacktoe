@@ -175,6 +175,23 @@ const boardFactory = function () {
 
       // reset indiciesOfWin
       this.indiciesOfWin = [];
+    },
+
+    isFull: function () {
+
+      legalMoves = ["X", "O"];
+      for (let i = 0; i < this.board.length; i++) {
+        for (let j = 0; j < this.board.length; j++) {
+
+          if (!legalMoves.includes(this.board[i][j])) {
+            return false;
+          };
+
+        };
+      };
+
+      return true;
+
     }
 
   };
