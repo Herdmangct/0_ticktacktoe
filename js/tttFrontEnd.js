@@ -1,32 +1,27 @@
 
+// #1 helper function:
+const clearBoard = function () {
+
+  const boardIndicies = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
+  for (let i = 0; i < boardIndicies.length; i++) {
+    $(`#${boardIndicies[i]}`).text("");
+  };
+
+};
+
+// main function
 $(document).ready(function () {
 
-  // // positions on board
-  // const $00 = $("#00");
-  // const $01 = $("#01");
-  // const $02 = $("#02");
-  //
-  // const $10 = $("#10");
-  // const $11 = $("#11");
-  // const $12 = $("#12");
-  //
-  // const $20 = $("#20");
-  // const $21 = $("#21");
-  // const $22 = $("#22");
+  // Initial variables
+  $Square = $(".box");
+  // gameOver = false;
 
-  const $Square = $(".box");
+  // #1 function:
+  $Square.on("click", function (event) {
 
-  // const theEnd = function (isTheEnd) {
-  //   if (isTheEnd) {
-  //
-  //   }
-  // }
-
-  // TODO clean this up
-  // make into function nice and simple
-  //////////////////////////////////////////////////////////////////////////////
-
-  $Square.on("click", function () {
+    // if (gameOver) {
+    //   return;
+    // }
 
     const x = $(this).data('x');
     const y = $(this).data('y');
@@ -36,155 +31,55 @@ $(document).ready(function () {
 
     if (board.isWin()) {
 
-      // TODO: light up the win positions
+      // don't run this function again
+      // gameOver = true;
+
+      // animate the win positions
       for (let i = 0; i < board.indiciesOfWin.length; i++) {
-        console.log($(`${board.indiciesOfWin[i]}`))
+        $(`#${board.indiciesOfWin[i]}`).addClass("hinge");
       };
 
-      // TODO: end the game (replace the tokens with end)
+      // set board to blank
+      setTimeout(clearBoard, 2000);
 
-      // alert("Game Over");
+      // end the game (replace the tokens with end)
+      setTimeout(function () {
+        const endIndicies = ["00", "01", "02", "10", "11", "12"];
+        const end = "THEEND";
+        for (let i = 0; i < endIndicies.length; i++) {
+
+          setTimeout(function () {
+            $(`#${endIndicies[i]}`).text(end[i]);
+          }, 500*(i+1));
+
+        };
+      }, 2000);
+
+      // reset the board
+      event.stopPropagation(); // stops the on.click from propogating to the window
+      $(window).one("click", function () {
+
+        // Reset animation
+        for (let i = 0; i < board.indiciesOfWin.length; i++) {
+          $(`#${board.indiciesOfWin[i]}`).removeClass("hinge");
+        };
+
+        // Reset backend board
+        board.reset();
+
+        // Reset front end board
+        clearBoard();
+
+        // play again
+        // gameOver = false;
+
+      });
+
+    } else {
+      // update player
+      board.updatePlayer();
     };
 
-    board.updatePlayer();
-
   });
-
-  // $00.on("click", function () {
-  //
-  //   board.move(0, 0, board.player);
-  //   $00.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over")
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
-  //
-  // $01.on("click", function () {
-  //
-  //   board.move(0, 1, board.player);
-  //   $01.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over")
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
-  //
-  // $02.on("click", function () {
-  //
-  //   board.move(0, 2, board.player);
-  //   $02.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over")
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
-  // //////////////////////////////////////////////////////////////////////////////
-  //
-  // //////////////////////////////////////////////////////////////////////////////
-  // $10.on("click", function () {
-  //
-  //   board.move(1, 0, board.player);
-  //   $10.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over")
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
-  //
-  // $11.on("click", function () {
-  //
-  //   board.move(1, 1, board.player);
-  //   $11.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over")
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
-  //
-  // $12.on("click", function () {
-  //
-  //   board.move(1, 2, board.player);
-  //   $12.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over")
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
-  // //////////////////////////////////////////////////////////////////////////////
-  // $20.on("click", function () {
-  //
-  //   board.move(2, 0, board.player);
-  //   $20.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over")
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
-  //
-  // $21.on("click", function () {
-  //
-  //   board.move(2, 1, board.player);
-  //   $21.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over");
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
-  //
-  // $22.on("click", function () {
-  //
-  //   board.move(2, 2, board.player);
-  //   $22.text(board.player);
-  //
-  //   // check if the player has won
-  //   if (board.isWin()) {
-  //     // TODO make this better
-  //     alert("Game Over")
-  //   };
-  //
-  //   board.updatePlayer();
-  //
-  // });
 
 });
