@@ -1,6 +1,6 @@
 
 // #1 helper function:
-const clearBoard = function () {
+const clearFrontEndBoard = function () {
 
   const boardIndicies = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
   for (let i = 0; i < boardIndicies.length; i++) {
@@ -31,7 +31,7 @@ $(document).ready(function () {
       board.move(x, y, board.player);
       $(this).text(board.player);
 
-      // wining move
+      // wining move or board is full
       if (board.isWin() || board.isFull()) {
 
         // don't run this function again
@@ -43,7 +43,7 @@ $(document).ready(function () {
         };
 
         // set board to blank
-        setTimeout(clearBoard, 2000);
+        setTimeout(clearFrontEndBoard, 2000);
 
         // end the game (replace the tokens with end)
         setTimeout(function () {
@@ -58,25 +58,27 @@ $(document).ready(function () {
           };
         }, 2000);
 
-        // reset the board
-        event.stopPropagation(); // stops the on.click from propogating to the window
-        $(window).one("click", function () {
+        // wait till animation is over then reset the board
+        setTimeout(function () {
 
-          // Reset animation
-          for (let i = 0; i < board.indiciesOfWin.length; i++) {
-            $(`#${board.indiciesOfWin[i]}`).removeClass("hinge");
-          };
+          event.stopPropagation(); // stops the on.click from propogating to the window
+          $(window).one("click", function () {
 
-          // Reset backend board
-          board.reset();
+            // Reset animation
+            for (let i = 0; i < board.indiciesOfWin.length; i++) {
+              $(`#${board.indiciesOfWin[i]}`).removeClass("hinge");
+            };
 
-          // Reset front end board
-          clearBoard();
+            board.reset(); // reset backend board
 
-          // play again
-          // gameOver = false;
+            clearFrontEndBoard();
 
-        });
+            // play again
+            // gameOver = false;
+
+          });
+
+        }, 5100);
 
       } else {
         // update player
