@@ -1,6 +1,21 @@
 
-.game-board
-{
+* {box-sizing: border-box;}
+
+.body {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column; /* column, row */
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-bar {
+
+}
+
+.game-board {
+
 	width: 600px;
 	height: 600px;
 	margin: 0 auto;
@@ -11,10 +26,14 @@
 
 	display: grid;
 	grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+
 }
 
-.box
-{
+.box {
+
+  min-width: 200px;
+  min-height: 200px;
+
   border: 6px solid #2c3e50;
   border-radius: 2px;
   font-family: Helvetica;
@@ -23,4 +42,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+}
+
+.token {
+
+  width: 100px;
+  height: 100px;
+
+  align-self: center;
+
 }

@@ -1,5 +1,21 @@
 
-// #1 helper function:
+// #1 helper function
+const playToken = function (board, x, y, player, $jqueryItem) {
+
+  // Backend: place token
+  board.move(x, y, board.player);
+
+  // Frontend: place token
+  if (player === "X") {
+    $jqueryItem.prepend($('<img>', {id:"zucked", class: "token", src: "img/zucked.png"})).css({width: "50px", height: "50px", position: "relative"});
+  } else {
+    $jqueryItem.prepend($('<img>', {id:"billGates", class: "token", src: "img/billGates.png"})).css({width: "50px", height: "50px", position: "relative"});
+  }
+
+
+};
+
+// #2 helper function:
 const clearFrontEndBoard = function () {
 
   const boardIndicies = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
@@ -9,46 +25,70 @@ const clearFrontEndBoard = function () {
 
 };
 
+// #3 helper function
+const animateWinPositions = function (addClass, winPositions, numWinPostions) {
+
+  if (addClass) {
+
+    for (let i = 0; i < numWinPostions; i++) {
+      $(`#${winPositions[i]}`).addClass("hinge");
+    };
+
+  } else {
+
+    for (let i = 0; i < numWinPostions; i++) {
+      $(`#${numWinPostions[i]}`).removeClass("hinge");
+    };
+
+  };
+
+
+}
+
+// #4 helper function
+const resetBackend = function () {
+
+  board.reset();
+
+};
+
 // main function
 $(document).ready(function () {
 
   // Initial variables
   $Square = $(".box");
-  // gameOver = false;
 
-  // #1 function:
+  // #1 function: play token
   $Square.on("click", function (event) {
-
-    // if (gameOver) {
-    //   return;
-    // }
 
     const x = $(this).data('x');
     const y = $(this).data('y');
 
     // cannot click twice on one square
-    if ($(this).text() !== "X" && $(this).text() !== "O") {
-      board.move(x, y, board.player);
-      $(this).text(board.player);
+    // if ($(this).text() !== "X" && $(this).text() !== "O") {
+    if ($(this).find("img").length < 1) {
+
+      const $currentSquare = $(this);
+
+      // $(this).text(board.player);
+      playToken(board, x, y, board.player, $currentSquare)
 
       // wining move or board is full
       if (board.isWin() || board.isFull()) {
 
-        // don't run this function again
-        // gameOver = true;
+        // update scores
+        board.updateScores();
 
         // animate the win positions
-        for (let i = 0; i < board.indiciesOfWin.length; i++) {
-          $(`#${board.indiciesOfWin[i]}`).addClass("hinge");
-        };
+        animateWinPositions(true, board.indiciesOfWin, board.indiciesOfWin.length);
 
         // set board to blank
         setTimeout(clearFrontEndBoard, 2000);
 
         // end the game (replace the tokens with end)
         setTimeout(function () {
-          const endIndicies = ["00", "01", "02", "10", "11", "12"];
-          const end = "THEEND";
+          const endIndicies = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
+          const end = "THEENDXOX";
           for (let i = 0; i < endIndicies.length; i++) {
 
             setTimeout(function () {
@@ -65,20 +105,17 @@ $(document).ready(function () {
           $(window).one("click", function () {
 
             // Reset animation
-            for (let i = 0; i < board.indiciesOfWin.length; i++) {
-              $(`#${board.indiciesOfWin[i]}`).removeClass("hinge");
-            };
+            animateWinPositions(false, board.indiciesOfWin, board.indiciesOfWin.length);
 
-            board.reset(); // reset backend board
+            // reset backend board
+            resetBackend();
 
+            // reset front end board
             clearFrontEndBoard();
-
-            // play again
-            // gameOver = false;
 
           });
 
-        }, 5100);
+        }, 6600);
 
       } else {
         // update player

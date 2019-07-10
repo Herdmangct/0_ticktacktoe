@@ -125,6 +125,8 @@ const boardFactory = function () {
 
     player: "X",
 
+    scores: {"X":0, "Y":0, "draws":0},
+
     indiciesOfWin: [],
 
     // functions
@@ -191,6 +193,16 @@ const boardFactory = function () {
       };
 
       return true;
+
+    },
+
+    updateScores: function () {
+
+      if (this.isWin()) {
+        this.scores[this.player] += 1;
+      } else {
+        this.scores["draws"] += 1;
+      };
 
     }
 
