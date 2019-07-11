@@ -12,6 +12,17 @@
 
 .nav-bar {
 
+  height: 200px;
+  width: 600px;
+
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: 60px 60px 60px;
+  grid-column-gap: 60px;
+  justify-content: center;
+  align-items: center;
+
 }
 
 .game-board {

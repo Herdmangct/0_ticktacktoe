@@ -196,6 +196,14 @@ const boardFactory = function () {
 
     },
 
+    // isEmpty: function () {
+
+      // return this.board === [[0, 0, 0],
+                             // [0, 0, 0],
+                             // [0, 0, 0]];
+
+    // },
+
     updateScores: function () {
 
       if (this.isWin()) {
@@ -203,6 +211,24 @@ const boardFactory = function () {
       } else {
         this.scores["draws"] += 1;
       };
+
+    },
+
+    moveAI: function () {
+
+      let x;
+      let y;
+
+      // generate
+      // x coord, y coord,
+      x = 0
+      y = 0
+
+      // create search tree
+
+      // minimax algorithm
+
+      return [x, y];
 
     }
 
