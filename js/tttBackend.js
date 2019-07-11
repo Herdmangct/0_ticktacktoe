@@ -196,13 +196,21 @@ const boardFactory = function () {
 
     },
 
-    // isEmpty: function () {
+    isEmpty: function () {
 
-      // return this.board === [[0, 0, 0],
-                             // [0, 0, 0],
-                             // [0, 0, 0]];
+      for (let i = 0; i < this.rows; i++) {
+        for (let j = 0; j < this.columns; j++) {
 
-    // },
+          if (this.board[i][j] !== 0) {
+            return false;
+          };
+
+        };
+      };
+
+      return true;
+
+    },
 
     updateScores: function () {
 

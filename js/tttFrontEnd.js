@@ -178,10 +178,10 @@ $(document).ready(function () {
   // Initial variables
   $Square = $(".box");
   $EasterEgg1 = $("button[name='Tech']");
-  // $AIPlayer = $("button[name='AIPlayer']");
+  $AIPlayer = $("button[name='AIPlayer']");
 
   let useImages = false;
-  // let playAgainstAI = false;
+  let playAgainstAI = false;
 
   // #1 function: turn on easter egg
   $EasterEgg1.one("click", function () {
@@ -195,24 +195,23 @@ $(document).ready(function () {
   })
 
   // #2 function: turn on AI player
-  // $AIPlayer.one("click", function () {
-  //
-  //   aIButtonFallsAway($AIPlayer);
-  //
-  //   playAgainstAI = true;
-  //
-  // });
+  $AIPlayer.one("click", function () {
+
+    aIButtonFallsAway($AIPlayer);
+
+    playAgainstAI = true;
+
+  });
 
   // #3 function: play game
   $Square.on("click", function (event) {
 
-    // make AI button fall away if they play a move
-    // if (board.isEmpty()) {
-    //
-    //   aIButtonFallsAway($AIPlayer);
-    //   console.log($AIPlayer);
-    //
-    // }
+    // make AI button fall away if they play a move first
+    if (board.isEmpty()) {
+
+      aIButtonFallsAway($AIPlayer);
+
+    }
 
     const $currentSquare = $(this);
     const x = $currentSquare.data('x');
