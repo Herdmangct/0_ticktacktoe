@@ -137,40 +137,63 @@ const endGameReset = function () {
 };
 
 // #8 Game Play helper function
-// const isWinOrIsFull = function (isWin, isFull, winPositions, numWinPostions) {
 
+const isWinOrIsFull = function (winPositions, numWinPostions) {
 
+  // update scores
+  board.updateScores();
 
-// };
+  // animate the win positions
+  animateWinPositions(true, winPositions, numWinPostions);
+
+  // set board to blank
+  setTimeout(clearFrontEndBoard, 2000);
+
+  // end the game (replace the tokens with end)
+  setTimeout(printTheEnd, 2000);
+
+  // wait till animation is over then reset the board
+  event.stopPropagation(); // stops the on.click from propogating to the window
+  setTimeout(endGameReset, 6600);
+
+};
 
 // AI PLAYER FUNCTIONS
+
+// #1 AI frontend place token
+const aIPlaceTokenFrontEnd = function (coordinates, useImages, player) {
+
+  // Front end square to send play to
+  $jqueryItem = $(`#${coordinates[0]}${coordinates[1]}`);
+
+  // Frontend: place token
+  if (useImages) {
+
+    if (player === "X") {
+      $jqueryItem.prepend($('<img>', {id:"zucked", class: "token", src: "img/zucked.png"})).css({width: "50px", height: "50px", position: "relative"});
+    } else {
+      $jqueryItem.prepend($('<img>', {id:"billGates", class: "token", src: "img/billGates.png"})).css({width: "50px", height: "50px", position: "relative"});
+    };
+  } else {
+    $jqueryItem.text(player);
+  };
+
+}
+
 // #1 AI player function
-// const playAI = function (board) {
-//
-//   // Backend: place token
-//   // returns x and y coordinates
-//   coordinates = board.moveAI();
-//   console.log(coordinates);
-//
-//   // Front end square to send play to
-//   // $jqueryItem = $(`#${coordinates[0]}${coordinates[1]}`);
-//
-//   // Frontend: place token
-//   // if (useImages) {
-//   //
-//   //   if (player === "X") {
-//   //     $jqueryItem.prepend($('<img>', {id:"zucked", class: "token", src: "img/zucked.png"})).css({width: "50px", height: "50px", position: "relative"});
-//   //   } else {
-//   //     $jqueryItem.prepend($('<img>', {id:"billGates", class: "token", src: "img/billGates.png"})).css({width: "50px", height: "50px", position: "relative"});
-//   //   };
-//   //
-//   // } else {
-//   //
-//   //   $jqueryItem.text(board.player);
-//   //
-//   // };
-//
-// };
+const playAI = function (board, useImages, player) {
+
+  // Backend: place token
+  coordinates = moveAI(board); // returns x and y coordinates of AI move
+
+  // play that move on board
+  board.move(Number(coordinates[0]), Number(coordinates[1]));
+  console.log(coordinates);
+
+  // Front End
+  aIPlaceTokenFrontEnd(coordinates, useImages, player);
+
+};
 
 // main function
 $(document).ready(function () {
@@ -229,35 +252,28 @@ $(document).ready(function () {
       // wining move or board is full
       if (board.isWin() || board.isFull()) {
 
-        // update scores
-        board.updateScores();
+        isWinOrIsFull(board.indiciesOfWin, board.indiciesOfWin.length);
 
-        // animate the win positions
-        animateWinPositions(true, board.indiciesOfWin, board.indiciesOfWin.length);
+      } else if (playAgainstAI) {
 
-        // set board to blank
-        setTimeout(clearFrontEndBoard, 2000);
-
-        // end the game (replace the tokens with end)
-        setTimeout(printTheEnd, 2000);
-
-        // wait till animation is over then reset the board
-        event.stopPropagation(); // stops the on.click from propogating to the window
-        setTimeout(endGameReset, 6600);
-
-      } // else if (playAgainstAI) {
-
-      //  board.updatePlayer();
+        // update player before AI plays
+        board.updatePlayer();
 
         ////////////////////////////////////////////////////////////////////////
         // AI PLAYER
-        // TODO!!!
-        // playAI(board);
+        // board.winTheGame();
+        playAI(board, useImages, board.player);
+        ////////////////////////////////////////////////////////////////////////
 
-    //  }
+        // if the AI wins or draws
+        if (board.isWin() || board.isFull()) {
+          isWinOrIsFull(board.indiciesOfWin, board.indiciesOfWin.length);
+        } else {
+          board.updatePlayer();
+        };
 
-      else {
-        // update player
+      } else {
+
         board.updatePlayer();
 
       };
