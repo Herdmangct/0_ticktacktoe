@@ -28,6 +28,20 @@ const aIButtonFallsAway = function ($AIPlayer) {
 
 }
 
+// #3 Easter Egg helper function
+const rageQuit = function ($RageQuit) {
+
+  // make button fall
+  $RageQuit.addClass("hinge");
+
+  // make button disappear
+  setInterval(function () {
+    $RageQuit.removeClass("hinge");
+    $RageQuit.hide();
+  }, 2000)
+
+}
+
 // Game Play helper functions
 // #1 Game Play helper function
 const xoOrImages = function (useImages, $currentSquare) {
@@ -188,7 +202,6 @@ const playAI = function (board, useImages, player) {
 
   // play that move on board
   board.move(Number(coordinates[0]), Number(coordinates[1]));
-  console.log(coordinates);
 
   // Front End
   aIPlaceTokenFrontEnd(coordinates, useImages, player);
@@ -200,8 +213,10 @@ $(document).ready(function () {
 
   // Initial variables
   $Square = $(".box");
+  // $Score = $(".score");
   $EasterEgg1 = $("button[name='Tech']");
   $AIPlayer = $("button[name='AIPlayer']");
+  $RageQuit = $("button[name='RageQuit']")
 
   let useImages = false;
   let playAgainstAI = false;
@@ -226,6 +241,20 @@ $(document).ready(function () {
 
   });
 
+  // #3 function: BLOW UP GAME!
+  $RageQuit.one("click", function () {
+
+    $(".game-board").hide();
+    $("button").hide();
+
+    // light em up
+    $('body').css('background-image', 'url("img/nuke.gif")');
+    setInterval(function () {
+      $('body').css('background-image', '');
+    }, 2500);
+
+  });
+
   // #3 function: play game
   $Square.on("click", function (event) {
 
@@ -245,8 +274,7 @@ $(document).ready(function () {
 
     if (hasntBeenClicked && !board.isWin() && !board.isFull()) {
 
-      //////////////////////////////////////////////////////////////////////////
-      // HUMAN PLAYER
+      // Play Humans token
       playToken(useImages, board, x, y, board.player, $currentSquare);
 
       // wining move or board is full
@@ -259,11 +287,8 @@ $(document).ready(function () {
         // update player before AI plays
         board.updatePlayer();
 
-        ////////////////////////////////////////////////////////////////////////
-        // AI PLAYER
-        // board.winTheGame();
+        // Play AI's token
         playAI(board, useImages, board.player);
-        ////////////////////////////////////////////////////////////////////////
 
         // if the AI wins or draws
         if (board.isWin() || board.isFull()) {

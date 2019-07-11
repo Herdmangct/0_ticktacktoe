@@ -1,27 +1,5 @@
-// 11111
-function emptyIndexies(board){
-  return  board.filter(s => s != "O" && s != "X");
-}
 
-// 22222
-function winning(board, player){
- if (
-        (board[0] == player && board[1] == player && board[2] == player) ||
-        (board[3] == player && board[4] == player && board[5] == player) ||
-        (board[6] == player && board[7] == player && board[8] == player) ||
-        (board[0] == player && board[3] == player && board[6] == player) ||
-        (board[1] == player && board[4] == player && board[7] == player) ||
-        (board[2] == player && board[5] == player && board[8] == player) ||
-        (board[0] == player && board[4] == player && board[8] == player) ||
-        (board[2] == player && board[4] == player && board[6] == player)
-        ) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// TODO: horizontal, vertical and diagonal all 1 function DRYER CODE
+// Board object helper functions ///////////////////////////////////////////////
 // #1 helper function: horizontal looping function
 const horizontalWin = function (board, rows, columns, player) {
 
@@ -131,26 +109,23 @@ const diagonalWin = function (board, rows, columns, player) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 
-// AI Helper FUNCTIONS
-
-//TODO
-///////////////////////////////////////////////////////////////
-// #1 helper function
-const flattenBoard = function (origiBoardObject) {
+// AI Helper FUNCTIONS /////////////////////////////////////////////////////////
+// #1 AI helper function
+const flattenBoard = function (originalBoardObject) {
 
   // convert zeros in indicies
   indexToCoords = {"00":0, "01":1, "02":2, "10":3, "11":4, "12":5, "20":6, "21":7, "22":8};
 
   let flatBoard = [];
 
-  for (let i = 0; i < origiBoardObject.rows; i++) {
-    for (let j = 0; j < origiBoardObject.columns; j++) {
+  for (let i = 0; i < originalBoardObject.rows; i++) {
+    for (let j = 0; j < originalBoardObject.columns; j++) {
 
       // convert 0's into indicies
-      if (origiBoardObject.board[i][j] === 0) {
+      if (originalBoardObject.board[i][j] === 0) {
         flatBoard.push(indexToCoords[`${i}${j}`]);
       } else {
-        flatBoard.push(origiBoardObject.board[i][j]);
+        flatBoard.push(originalBoardObject.board[i][j]);
       };
 
     };
@@ -160,7 +135,7 @@ const flattenBoard = function (origiBoardObject) {
 
 }
 
-// #2 helper function
+// #2 AI helper function
 const findEmptySquares = function (flatBoard) {
 
   emptySquares = [];
@@ -174,7 +149,7 @@ const findEmptySquares = function (flatBoard) {
 
 };
 
-// #3 helper function
+// #3 AI helper function
 const convertIndextoCoordinates = function (index) {
 
   indexToCoords = {0:"00", 1:"01", 2:"02", 3:"10", 4:"11", 5:"12", 6:"20", 7:"21", 8:"22"};
@@ -183,8 +158,7 @@ const convertIndextoCoordinates = function (index) {
 
 }
 
-// #4 helper function
-// TODO fix this up
+// #4 AI helper function // TODO make this loops
 const winFunction = function (board, player) {
 
 
@@ -205,178 +179,103 @@ const winFunction = function (board, player) {
     }
 };
 
-////////////////////////////////////////////////////////////////////////////////
-huPlayer = "X";
+humanPlayer = "X";
 aiPlayer = "O";
 
-// #2 helper function
-const moveAI = function (origiBoardObject) {
+// #5 AI helper function
+const moveAI = function (originalBoardObject) {
 
   // make board an array
-  const origBoard = flattenBoard(origiBoardObject);
+  const originalBoard = flattenBoard(originalBoardObject);
 
   // find best move
-  // const bestMoveObject = miniMax(origBoard, aiPlayer);
-  const bestMoveObject = minimax(origBoard, aiPlayer);
-  console.log(bestMoveObject);
+  const bestMoveObject = minimax(originalBoard, aiPlayer);
   const bestMove = convertIndextoCoordinates(bestMoveObject.index);
 
-  // return x and y of AI's move
+  // return x and y in an array of AI's move
   return bestMove;
 
 }
 
+// #6 AI helper function
 const minimax = function (newBoard, player) {
 
-  //available spots
-  var availSpots = emptyIndexies(newBoard);
+  // available spots
+  const emptySquares = findEmptySquares(newBoard);
 
-  // checks for the terminal states such as win, lose, and tie and returning a value accordingly
-  if (winFunction(newBoard, huPlayer)){
+  // #1 check terminal states //////////////////////////////////////////////////
+  // check terminal states
+  // assign 10 for AI win, -10 for AI loss and 0 for AI draw
+  if (winFunction(newBoard, humanPlayer)){
      return {score:-10};
   }
 	else if (winFunction(newBoard, aiPlayer)){
     return {score:10};
 	}
-  else if (availSpots.length === 0){
+  else if (emptySquares.length === 0){
   	return {score:0};
   }
+  //////////////////////////////////////////////////////////////////////////////
 
-// an array to collect all the objects
-  var moves = [];
+  // #2 Find score for each available spot /////////////////////////////////////
+  // an array to collect move objects (index:, score:)
+  let moves = [];
 
   // loop through available spots
-  for (var i = 0; i < availSpots.length; i++){
-    //create an object for each and store the index of that spot that was stored as a number in the object's index key
-    var move = {};
-  	move.index = newBoard[availSpots[i]];
+  for (let i = 0; i < emptySquares.length; i++){
+
+    // store index in available spot
+    let move = {};
+  	move.index = newBoard[emptySquares[i]];
 
     // set the empty spot to the current player
-    newBoard[availSpots[i]] = player;
+    newBoard[emptySquares[i]] = player;
 
-    //if collect the score resulted from calling minimax on the opponent of the current player
-    if (player == aiPlayer){
-      var result = minimax(newBoard, huPlayer);
+    // call miniMax to get score for each empty space node
+    if (player === aiPlayer){
+      let result = minimax(newBoard, humanPlayer);
       move.score = result.score;
     }
     else{
-      var result = minimax(newBoard, aiPlayer);
+      let result = minimax(newBoard, aiPlayer);
       move.score = result.score;
     }
 
     //reset the spot to empty
-    newBoard[availSpots[i]] = move.index;
+    newBoard[emptySquares[i]] = move.index;
 
     // push the object to the array
     moves.push(move);
   }
+  //////////////////////////////////////////////////////////////////////////////
 
-// if it is the computer's turn loop over the moves and choose the move with the highest score
-  var bestMove;
-  if(player === aiPlayer){
-    var bestScore = -10000;
-    for(var i = 0; i < moves.length; i++){
+  // #3 get max or min score based on computer or human player /////////////////
+
+  let bestMove;
+  if (player === aiPlayer) {
+    // if it is the computer's turn loop over the moves and choose the move with the highest score
+    let bestScore = -Infinity;
+    for(let i = 0; i < moves.length; i++){
       if(moves[i].score > bestScore){
         bestScore = moves[i].score;
         bestMove = i;
-      }
-    }
-  }else{
-
-// else loop over the moves and choose the move with the lowest score
-    var bestScore = 10000;
-    for(var i = 0; i < moves.length; i++){
+      };
+    };
+  } else {
+    // else loop over the moves and choose the move with the lowest score
+    let bestScore = Infinity;
+    for(let i = 0; i < moves.length; i++) {
       if(moves[i].score < bestScore){
         bestScore = moves[i].score;
         bestMove = i;
-      }
-    }
-  }
+      };
+    };
+  };
+  //////////////////////////////////////////////////////////////////////////////
 
-// return the chosen move (object) from the array to the higher depth
   return moves[bestMove];
 };
-
 ////////////////////////////////////////////////////////////////////////////////
-
-
-// #3 newboard and player
-// const miniMax = function (newBoard, player) {
-//
-//   // available spots indexes of flat board
-//   const availableSpots = findEmptySquares(newBoard);
-//
-//   // score
-//   if (winFunction(newBoard, player)) {
-//     return {score:10};
-//   } else if (winFunction(newBoard, player)) {
-//     return {score:-10};
-//   } else if (availableSpots.length === 0) {
-//     return {score:0};
-//   };
-//
-//   // collect scores from each of the empty spots in the board
-//   let moves = [];
-//   for (let i = 0; i < availableSpots.length; i++) {
-//
-//     // store each available spot in a move variable
-//     let move = {};
-//     move.index = newBoard[availableSpots[i]];
-//
-//     // set empty spot to current player
-//     newBoard[availableSpots[i]] = player;
-//
-//     // collect score resulted from calling miniMax on opponent
-//     if (player === "O") {
-//       let result = miniMax(newBoard, "X");
-//       move.score = result.score;
-//     }
-//     else {
-//       result = miniMax(newBoard, "O");
-//       move.score = result.score;
-//     }
-//
-//     // reset the spot to empty
-//     newBoard[availableSpots[i]] = move.index;
-//
-//     // push the move into the array
-//     moves.push(move);
-//
-//   };
-//
-//     // AI turn loop over moves and choose move with highest score
-//     let bestMove;
-//     if (player === "O") {
-//       let bestScore = -Infinity;
-//       for (let i = 0; i < moves.length; i++) {
-//
-//         if (moves[i].score > bestScore) {
-//           bestScore = moves[i].score;
-//           bestMove = i;
-//         };
-//
-//       };
-//
-//     } else {
-//
-//       // choose lowest score for human player
-//       let minScore = Infinity;
-//       for (let i = 0; i < moves.length; i++) {
-//
-//         if (moves[i].score < minScore) {
-//           minScore = moves[i].score;
-//           bestMove = i;
-//         };
-//
-//       };
-//
-//     };
-//
-//     return moves[bestMove];
-//
-//
-// }
-///////////////////////////////////////////////////////////////
 
 // #1 function: board factory
 const boardFactory = function () {
@@ -490,30 +389,11 @@ const boardFactory = function () {
 
     },
 
-    // moveAI: function () {
-    //
-    //   // get indicies of all empty squares
-    //   // const emptySquares = findEmptySquares(this.board, this.rows, this.columns);
-    //
-    //   // find best move
-    //   bestMove = miniMax(board, board.player);
-    //
-    //   // play that move on the board
-    //   this.move(bestMove[0], bestMove[1]);
-    //
-    //   // return x and y of AI's move
-    //   return bestMove;
-    //
-    //   // create search tree
-    //
-    //   // minimax algorithm
-    //
-    // },
-
     // helper function
+    // Cheat!
     winTheGame: function () {
 
-      this.board = [[this.player, this.player, this.player],
+      this.board = [["X", "X", "X"],
                     [0, 0, 0],
                     [0, 0, 0]];
 
