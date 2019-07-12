@@ -203,7 +203,7 @@ const minimax = function (newBoard, player) {
   // available spots
   const emptySquares = findEmptySquares(newBoard);
 
-  // #1 check terminal states //////////////////////////////////////////////////
+  // #1 1 Base Case: check terminal states /////////////////////////////////////
   // check terminal states
   // assign 10 for AI win, -10 for AI loss and 0 for AI draw
   if (winFunction(newBoard, humanPlayer)){
@@ -231,7 +231,7 @@ const minimax = function (newBoard, player) {
     // set the empty spot to the current player
     newBoard[emptySquares[i]] = player;
 
-    // call miniMax to get score for each empty space node
+    // Recurse through the tree ////////////////////////////////////////////////
     if (player === aiPlayer){
       let result = minimax(newBoard, humanPlayer);
       move.score = result.score;
@@ -250,7 +250,6 @@ const minimax = function (newBoard, player) {
   //////////////////////////////////////////////////////////////////////////////
 
   // #3 get max or min score based on computer or human player /////////////////
-
   let bestMove;
   if (player === aiPlayer) {
     // if it is the computer's turn loop over the moves and choose the move with the highest score
@@ -293,7 +292,7 @@ const boardFactory = function () {
 
     player: "X",
 
-    scores: {"X":0, "Y":0, "draws":0},
+    scores: {"X":0, "O":0, "draws":0},
 
     indiciesOfWin: [],
 

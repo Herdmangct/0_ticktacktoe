@@ -89,19 +89,19 @@ const clearFrontEndBoard = function () {
 };
 
 // #4 Game Play helper function
-const printTheEnd = function () {
+const printTheEnd = function (board, playAgainstAI) {
 
-  const endIndicies = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
-  const end = "THEENDXOX";
-  for (let i = 0; i < endIndicies.length; i++) {
+    const endIndicies = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
+    const end = `THEENDXOX`;
+    for (let i = 0; i < endIndicies.length; i++) {
 
-    setTimeout(function () {
-      $(`#${endIndicies[i]}`).text(end[i]);
-    }, 500*(i+1));
+      setTimeout(function () {
+        $(`#${endIndicies[i]}`).text(end[i]);
+      }, 500*(i+1));
 
-  };
+    };
 
-}
+};
 
 // #5 Game Play helper function
 const animateWinPositions = function (addClass, winPositions, numWinPostions) {
@@ -151,8 +151,7 @@ const endGameReset = function () {
 };
 
 // #8 Game Play helper function
-
-const isWinOrIsFull = function (winPositions, numWinPostions) {
+const isWinOrIsFull = function (winPositions, numWinPostions, playAgainstAI) {
 
   // update scores
   board.updateScores();
@@ -164,11 +163,22 @@ const isWinOrIsFull = function (winPositions, numWinPostions) {
   setTimeout(clearFrontEndBoard, 2000);
 
   // end the game (replace the tokens with end)
-  setTimeout(printTheEnd, 2000);
+  setTimeout(function () {
+    printTheEnd(board, playAgainstAI);
+  }, 2000);
 
   // wait till animation is over then reset the board
   event.stopPropagation(); // stops the on.click from propogating to the window
   setTimeout(endGameReset, 6600);
+
+};
+
+// #9 Update scores
+const updateScoresFrontEnd = function ($Xwins, $Owins, $Draws, board) {
+
+  $Xwins.text(`${board.scores["X"]}`);
+  $Owins.text(`${board.scores["O"]}`);
+  $Draws.text(`${board.scores["draws"]}`);
 
 };
 
@@ -213,10 +223,18 @@ $(document).ready(function () {
 
   // Initial variables
   $Square = $(".box");
-  // $Score = $(".score");
+
+  // Easter Egg Buttons
   $EasterEgg1 = $("button[name='Tech']");
   $AIPlayer = $("button[name='AIPlayer']");
-  $RageQuit = $("button[name='RageQuit']")
+  $RageQuit = $("button[name='RageQuit']");
+
+  // scores
+  $Xwins = $("#score1");
+  $Owins = $("#score2");
+  $Draws = $("#score3");
+  $AIScore = $("#AI");
+  $ZuckScore = $("#zuck");
 
   let useImages = false;
   let playAgainstAI = false;
@@ -230,6 +248,9 @@ $(document).ready(function () {
     // turn on images
     useImages = true;
 
+    $AIScore.text("Bill Wins");
+    $ZuckScore.text("Zuck Wins");
+
   })
 
   // #2 function: turn on AI player
@@ -239,6 +260,8 @@ $(document).ready(function () {
 
     playAgainstAI = true;
 
+    $AIScore.text("AI wins");
+
   });
 
   // #3 function: BLOW UP GAME!
@@ -246,6 +269,7 @@ $(document).ready(function () {
 
     $(".game-board").hide();
     $("button").hide();
+    $(".score").hide();
 
     // light em up
     $('body').css('background-image', 'url("img/nuke.gif")');
@@ -280,7 +304,9 @@ $(document).ready(function () {
       // wining move or board is full
       if (board.isWin() || board.isFull()) {
 
-        isWinOrIsFull(board.indiciesOfWin, board.indiciesOfWin.length);
+        isWinOrIsFull(board.indiciesOfWin, board.indiciesOfWin.length, playAgainstAI);
+
+        updateScoresFrontEnd($Xwins, $Owins, $Draws, board, $AIScore, playAgainstAI);
 
       } else if (playAgainstAI) {
 
@@ -292,7 +318,11 @@ $(document).ready(function () {
 
         // if the AI wins or draws
         if (board.isWin() || board.isFull()) {
-          isWinOrIsFull(board.indiciesOfWin, board.indiciesOfWin.length);
+
+          isWinOrIsFull(board.indiciesOfWin, board.indiciesOfWin.length, playAgainstAI);
+
+          updateScoresFrontEnd($Xwins, $Owins, $Draws, board, $AIScore, playAgainstAI);
+
         } else {
           board.updatePlayer();
         };

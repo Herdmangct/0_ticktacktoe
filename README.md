@@ -3,8 +3,8 @@
 ## How to play
 - open the web app version by clicking on the link at the bottom of this README.
 - Remember Tick Tack Toe from your younger years
-- if you win or lose the winning combination with be animated and a the end animation will play
-- if you tie there will be a 2 second pause and then the same end animation will play across the screen.  
+- When the game is over the board will print 'the end' and a score at the bottom
+- the order of the score is win X (or human), win Y (or human) and draws. 
 
 ## Features
 - Normal Tic Tack Toe.
