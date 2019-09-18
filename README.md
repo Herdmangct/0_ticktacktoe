@@ -5,7 +5,7 @@
 - Remember Tick Tack Toe from your younger years
 - When the game is over the board will print 'the end' and a score at the bottom
 - To play the next round wait until 'the end' is printed and then click anywhere. The board will reset
-- the order of the score is win X (or human), win Y (or human) and draws. 
+- the order of the score is win X (or human), win Y (or AI) and draws. 
 
 ## Features
 - Normal Tic Tack Toe.
