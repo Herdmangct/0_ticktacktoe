@@ -13,7 +13,7 @@
 - Rage Quit button - for if you get tired of drawing (or losing) with the AI.
 
 ## Bugs
-- None that I know of but I have lied at least once before in my life time.
+- None that I know of but I have been wrong before!
 
 ## TODO
 - network multiplayer.
