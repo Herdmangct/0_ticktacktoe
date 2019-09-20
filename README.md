@@ -1,5 +1,7 @@
 # Project 0: Tic Tac Toe
 
+![Tic Tac Toe Homepage](/img/TicTacToe.png)
+
 ## How to play
 - open the web app version by clicking on the link at the bottom of this README.
 - Remember Tic Tac Toe from your younger years
